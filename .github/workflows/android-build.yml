@@ -21,19 +21,15 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v2
     
-    - name: Install Android components
+    - name: Install Android build tools
       run: |
-        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "build-tools;31.0.0" "platforms;android-31"
+        sdkmanager --update --channel=0
+        sdkmanager "build-tools;31.0.0" "platforms;android-31" "ndk;23.1.7779620"
     
-    - name: Build APK with Gradle wrapper (download fresh)
+    - name: Build APK with system Gradle
       run: |
-        rm -rf gradle
-        mkdir -p gradle/wrapper
-        # Download gradle-wrapper.jar from gradle wrapper distribution
-        wget -q https://raw.githubusercontent.com/gradle/gradle/v6.7.1/gradle/wrapper/gradle-wrapper.jar -O gradle/wrapper/gradle-wrapper.jar
-        wget -q https://raw.githubusercontent.com/gradle/gradle/v6.7.1/gradle/wrapper/gradle-wrapper.properties -O gradle/wrapper/gradle-wrapper.properties
-        chmod +x ./gradlew
-        ./gradlew assembleDebug
+        export ANDROID_SDK_ROOT=$ANDROID_HOME
+        gradle -p . assembleDebug --stacktrace
     
     - name: Upload APK
       if: success()
