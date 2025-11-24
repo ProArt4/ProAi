@@ -16,15 +16,11 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '11'
-    - name: Cache Gradle packages
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
+    - name: Download Gradle wrapper
+      run: |
+        mkdir -p gradle/wrapper
+        curl -L -o gradle/wrapper/gradle-wrapper.jar https://repo.gradle.org/gradle/gradle-6.7.1/gradle-wrapper-6.7.1.jar
+        curl -L -o gradle/wrapper/gradle-wrapper.properties https://raw.githubusercontent.com/gradle/gradle/v6.7.1/gradle/wrapper/gradle-wrapper.properties
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
     - name: Build with Gradle
