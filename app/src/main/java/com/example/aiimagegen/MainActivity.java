@@ -9,7 +9,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TextView tv = new TextView(this);
-        tv.setText("AI Image Generation App Ready");
+        tv.setText("AI Image Generation App");
         setContentView(tv);
     }
 }
