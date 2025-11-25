@@ -24,11 +24,17 @@ jobs:
     - name: Install Android components
       run: |
         sdkmanager --update --channel=0
-        sdkmanager "build-tools;29.0.3" "platforms;android-29"
+        sdkmanager "build-tools;30.0.3" "platforms;android-30"
     
+    - name: Generate Gradle wrapper
+      run: |
+        java -version
+        gradle wrapper --gradle-version 6.9.4
+
     - name: Build APK
       run: |
-        gradle assembleDebug --stacktrace
+        chmod +x ./gradlew
+        ./gradlew assembleDebug --stacktrace
     
     - name: Upload APK
       if: success()
