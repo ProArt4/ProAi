@@ -24,17 +24,24 @@ jobs:
     - name: Install Android components
       run: |
         sdkmanager --update --channel=0
-        sdkmanager "build-tools;30.0.3" "platforms;android-30"
-    
-    - name: Generate Gradle wrapper
-      run: |
-        java -version
-        gradle wrapper --gradle-version 6.9.4
+        sdkmanager "build-tools;31.0.0" "platforms;android-31" "platform-tools"
 
-    - name: Build APK
+    - name: Download Gradle
       run: |
-        chmod +x ./gradlew
-        ./gradlew assembleDebug --stacktrace
+        curl -sSL https://services.gradle.org/distributions/gradle-7.5.1-bin.zip -o gradle.zip
+        unzip -q gradle.zip -d $RUNNER_TEMP
+        ls -la $RUNNER_TEMP
+        export GRADLE_HOME=$RUNNER_TEMP/gradle-7.5.1
+        echo "Gradle home: $GRADLE_HOME"
+        $GRADLE_HOME/bin/gradle --version
+
+    - name: Build APK using downloaded Gradle
+      env:
+        GRADLE_HOME: ${{ runner.temp }}/gradle-7.5.1
+      run: |
+        export GRADLE_HOME=${{ runner.temp }}/gradle-7.5.1
+        chmod +x $GRADLE_HOME/bin/gradle
+        $GRADLE_HOME/bin/gradle assembleDebug -p app --no-daemon --stacktrace
     
     - name: Upload APK
       if: success()
